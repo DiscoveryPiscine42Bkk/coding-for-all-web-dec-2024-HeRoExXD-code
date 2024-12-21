@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <!-- นำเข้า jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Calculator</h1>
+    <!-- ช่องอินพุตและตัวเลือกสำหรับใส่ตัวเลขและโอเปอเรเตอร์ -->
+    <input type="text" id="leftOperand" placeholder="Left number">
+    <select id="operator">
+        <!-- ตัวเลือกโอเปอเรเตอร์ -->
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+        <option value="%">%</option>
+    </select>
+    <input type="text" id="rightOperand" placeholder="Right number">
+    <button id="calculateBtn">Click me!</button>
+    
+    <script>
+        // รอจนกว่า DOM จะโหลดเสร็จ
+        $(document).ready(function() {
+            // ตั้งค่าเหตุการณ์เมื่อคลิกปุ่ม "คำนวณ"
+            $('#calculateBtn').click(function() {
+                // ดึงค่าจากช่องอินพุต
+                const leftOperand = $('#leftOperand').val(); // ตัวเลขซ้าย
+                const rightOperand = $('#rightOperand').val(); // ตัวเลขขวา
+                const operator = $('#operator').val(); // โอเปอเรเตอร์ที่เลือก
+
+                // ตรวจสอบว่าค่าที่ป้อนเข้ามาเป็นเลขจำนวนเต็มบวกหรือไม่
+                if (!isPositiveInteger(leftOperand) || !isPositiveInteger(rightOperand)) {
+                    alert("Error :("); // แจ้งข้อผิดพลาดถ้าตรวจสอบไม่ผ่าน
+                    console.error("Error :("); // แสดงข้อผิดพลาดในคอนโซล
+                    return; // หยุดการทำงาน
+                }
+
+                // แปลงค่าจากสตริงเป็นตัวเลข
+                const num1 = parseInt(leftOperand);
+                const num2 = parseInt(rightOperand);
+                let result;
+
+                // คำนวณค่าตามโอเปอเรเตอร์ที่เลือก
+                try {
+                    switch (operator) {
+                        case '+': 
+                            result = num1 + num2; // บวก
+                            break;
+                        case '-': 
+                            result = num1 - num2; // ลบ
+                            break;
+                        case '*': 
+                            result = num1 * num2; // คูณ
+                            break;
+                        case '/':
+                        case '%':
+                            // ตรวจสอบว่าห้ามหารด้วย 0
+                            if (num2 === 0) {
+                                alert("It's over 9000!"); // แจ้งข้อผิดพลาดเมื่อหารด้วย 0
+                                console.error("It's over 9000!"); // แสดงในคอนโซล
+                                return; // หยุดการทำงาน
+                            }
+                            // ทำการหารหรือหาค่าเศษ
+                            result = operator === '/' ? num1 / num2 : num1 % num2;
+                            break;
+                        default:
+                            // กรณีโอเปอเรเตอร์ไม่ถูกต้อง
+                            throw new Error("Invalid Operator");
+                    }
+
+                    // แสดงผลลัพธ์ผ่าน alert และ log ลงในคอนโซล
+                    alert(`Result: ${result}`);
+                    console.log(`Result: ${result}`);
+                } catch (e) {
+                    // จัดการข้อผิดพลาดอื่นๆ
+                    alert("Error :(");
+                    console.error("Error :(");
+                }
+            });
+
+            // ตั้งค่าการแจ้งเตือนให้ผู้ใช้ทุก 30 วินาที
+            setInterval(function() {
+                alert("Please, use me...");
+            }, 30000); // ทุก 30 วินาที
+        });
+
+        // ฟังก์ชันตรวจสอบว่าค่าที่ใส่มาเป็นจำนวนเต็มบวกหรือไม่
+        function isPositiveInteger(value) {
+            // ใช้ Regular Expression เพื่อตรวจสอบว่ามีแต่ตัวเลข
+            return /^\d+$/.test(value);
+        }
+    </script>
+</body>
+</html>
